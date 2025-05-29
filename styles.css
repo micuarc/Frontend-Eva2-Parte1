@@ -32,10 +32,6 @@ div #formulario {
   margin-bottom: 2rem;
 }
 
-table {
-  border: 2px solid #000;
-}
-
 label {
   align-self: flex-start;
   margin-bottom: 0.5rem;
@@ -51,4 +47,60 @@ label {
 
 #tablaEstudiantes {
   margin-top: 1.5rem;
+  padding: 0;
+}
+
+table {
+  border: 2px solid #000;
+}
+
+#tablaDeEstudiantes th,
+#tablaDeEstudiantes td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+[headers="col-nombre"],
+[headers="col-apellido"] {
+  width: 30%;
+}
+
+[headers="col-calificacion"] {
+  width: 1%;
+}
+
+[headers="col-acciones"] {
+  width: 30%;
+}
+
+@media (min-width: 992px) {
+  [headers="col-nombre"],
+  [headers="col-apellido"] {
+    width: 30%;
+    white-space: wrap;
+  }
+
+  [headers="col-calificacion"] {
+    width: 1%;
+  }
+
+  [headers="col-acciones"] {
+    width: 20%;
+  }
+}
+
+@media (min-width: 1400px) {
+  [headers="col-nombre"],
+  [headers="col-apellido"] {
+    width: 38%;
+    white-space: wrap;
+  }
+
+  [headers="col-calificacion"] {
+    width: 4%;
+  }
+
+  [headers="col-acciones"] {
+    width: 20%;
+  }
 }

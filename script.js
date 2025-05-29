@@ -14,23 +14,21 @@ document
     const nombre = selNombre.value.trim();
     const apellido = selApellido.value.trim();
     const nota = parseFloat(selNota.value);
-    //Limpiar mensajes de error de campos
-    [selNombre, selApellido, selNota].forEach((input) => {
+    [
+      //Limpiar mensajes de error de campos
+      selNombre,
+      selApellido,
+      selNota,
+    ].forEach((input) => {
       input.addEventListener("input", () => {
         input.setCustomValidity("");
-        input.reportValidity();
       });
-    });
-    selNota.addEventListener("input", () => {
-      selNota.setCustomValidity("");
-      selNota.reportValidity();
     });
 
     //Validar errores
-    errorNombreOApellido(selNombre, "Nombre");
-    errorNombreOApellido(selApellido, "Apellido");
     errorNota(selNota);
-
+    errorNombreOApellido(selApellido, "Apellido");
+    errorNombreOApellido(selNombre, "Nombre");
     //Evitar ingresar valores erróneos
     if (
       !selNombre.checkValidity() ||
@@ -39,14 +37,12 @@ document
     ) {
       return;
     }
-
     //Pushear estudiante al arreglo
     const estudiante = { nombre, apellido, nota };
     estudiantes.push(estudiante);
     agregarEstudiante(estudiante);
     calcularPromedio();
     e.target.reset(); //limpiar campos llenados
-    e.reset(); //limpiar la página
   });
 
 //Funciones de validación
@@ -60,6 +56,7 @@ function errorNombreOApellido(sel, campo) {
   } else {
     sel.setCustomValidity("");
   }
+  sel.reportValidity();
   return sel.checkValidity();
 }
 
@@ -80,18 +77,30 @@ function errorNota(num) {
   } else {
     num.setCustomValidity(""); // limpia el error, no hay problema
   }
+  num.reportValidity();
   return num.checkValidity();
 }
 
 // Pushear estudiante a la tabla
 function agregarEstudiante(est) {
   const row = document.createElement("tr");
-  [est.nombre, est.apellido, est.nota.toFixed(1)].forEach((valor) => {
+  [
+    est.nombre,
+    est.apellido,
+    est.nota.toFixed(1),
+    `${crearBoton("success", "Editar")} ${crearBoton("danger", "Borrar")}`,
+  ].forEach((valor, i) => {
     const celdaValor = document.createElement("td");
-    celdaValor.textContent = valor;
+    i !== 3
+      ? (celdaValor.textContent = valor)
+      : celdaValor.insertAdjacentHTML("afterbegin", valor);
     row.appendChild(celdaValor);
   });
   tabla.appendChild(row);
+}
+
+function crearBoton(tipo, accion) {
+  return `<button class="btn btn-${tipo} accion p-1 px-sm-2 px-md-3 fs-6 m-1 my-sm-0 mx-sm-1">${accion}</button>`;
 }
 
 //Calcular promedio general
