@@ -1,5 +1,9 @@
 const estudiantes = [];
 const promedio = document.getElementById("promedioCurso");
+const total = document.getElementById("total");
+const aprobados = document.getElementById("aprobados");
+const reprobados = document.getElementById("reprobados");
+
 const tabla = document.querySelector("#tablaDeEstudiantes tbody");
 const nombreEstSelec = document.getElementById("nombreEst");
 const apellidoEstSelec = document.getElementById("apellidoEst");
@@ -9,6 +13,8 @@ const formularioEditarEst = document.getElementById(
 );
 const botonGuardarModal = document.getElementById("guardarCambios");
 const botonCancelarModal = document.getElementById("cancelarCambios");
+let estudianteSeleccionado = "";
+let rowSeleccionada = "";
 
 document
   .getElementById("formularioEstudiantes")
@@ -28,31 +34,6 @@ document
       return;
     }
 
-    /*
-    [
-      //limpiar mensajes de error de campos
-      selNombre,
-      selApellido,
-      selNota,
-    ].forEach((input) => {
-      input.addEventListener("input", () => {
-        input.setCustomValidity("");
-      });
-    });
-
-    //validar errores
-    errorNota(selNota);
-    errorNombreOApellido(selApellido, "Apellido");
-    errorNombreOApellido(selNombre, "Nombre");
-    //evitar ingresar valores erróneos
-    if (
-      !selNombre.checkValidity() ||
-      !selApellido.checkValidity() ||
-      !selNota.checkValidity()
-    ) {
-      return;
-    }
-      */
     //pushear estudiante al arreglo
     const estudiante = { nombre, apellido, nota };
     estudiantes.push(estudiante);
@@ -173,50 +154,46 @@ function borrarEstudiante(est, row) {
 }
 
 function editarEstudiante(est, row) {
-  const index = estudiantes.indexOf(est);
-  console.log(index);
-  if (index >= 0) {
-    nombreEstSelec.setAttribute("value", estudiantes[index].nombre);
-    apellidoEstSelec.setAttribute("value", estudiantes[index].apellido);
-    notaEstSelec.setAttribute("value", estudiantes[index].nota);
-  }
-  // ERROR: Si se cambia el valor de un input, se mantiene incluso en distintos estudiantes
-  // Por ejemplo, si solo cambio apellido, se mantiene el apellido pero los otros valores cambian bien entre estudiantes
-  botonCancelarModal.addEventListener("click", () => {
-    nombreEstSelec.setAttribute("value", "");
-    apellidoEstSelec.setAttribute("value", "");
-    notaEstSelec.setAttribute("value", "");
-  });
-  // ERROR: los valores se modifican solo en la segunda row
+  estudianteSeleccionado = est;
+  rowSeleccionada = row;
 
-  botonGuardarModal.addEventListener("click", () => {
-    if (validarInputs(nombreEstSelec, apellidoEstSelec, notaEstSelec)) return;
-    estudiantes[index].nombre = nombreEstSelec.value.trim();
-    estudiantes[index].apellido = apellidoEstSelec.value.trim();
-    estudiantes[index].nota = parseFloat(notaEstSelec.value);
-    let cont = 0;
-    for (const child of row.children) {
-      console.log(child);
-      switch (cont) {
-        case 0:
-          child.textContent = estudiantes[index].nombre;
-          break;
-        case 1:
-          child.textContent = estudiantes[index].apellido;
-          break;
-        case 2:
-          child.textContent = estudiantes[index].nota;
-          break;
-      }
-      cont++;
-    }
-    nombreEstSelec.setAttribute("value", "");
-    apellidoEstSelec.setAttribute("value", "");
-    notaEstSelec.setAttribute("value", "");
-    calcularPromedio();
-    botonCancelarModal.click();
-  });
+  nombreEstSelec.value = est.nombre;
+  apellidoEstSelec.value = est.apellido;
+  notaEstSelec.value = est.nota;
 }
+
+botonCancelarModal.addEventListener("click", () => {
+  nombreEstSelec.value = "";
+  apellidoEstSelec.value = "";
+  notaEstSelec.value = "";
+
+  estudianteSeleccionado = "";
+  rowSeleccionada = "";
+});
+
+botonGuardarModal.addEventListener("click", () => {
+  if (validarInputs(nombreEstSelec, apellidoEstSelec, notaEstSelec)) return;
+
+  estudianteSeleccionado.nombre = nombreEstSelec.value.trim();
+  estudianteSeleccionado.apellido = apellidoEstSelec.value.trim();
+  estudianteSeleccionado.nota = parseFloat(notaEstSelec.value);
+
+  const celdasRow = rowSeleccionada.children;
+  celdasRow[0].textContent = estudianteSeleccionado.nombre;
+  celdasRow[1].textContent = estudianteSeleccionado.apellido;
+  celdasRow[2].textContent = estudianteSeleccionado.nota.toFixed(1);
+
+  calcularPromedio();
+  // Limpiar formulario
+  nombreEstSelec.value = "";
+  apellidoEstSelec.value = "";
+  notaEstSelec.value = "";
+
+  botonCancelarModal.click();
+
+  estudianteEditando = "";
+  filaEditando = "";
+});
 
 //calcular promedio general
 const valorInicial = 0;
@@ -224,6 +201,7 @@ function calcularPromedio() {
   if (estudiantes.length === 0) {
     promedio.textContent = "Promedio de Calificaciones: No Disponible";
   } else {
+    //calcular promedio
     const totalDeNotas = estudiantes.reduce((acc, estudiante) => {
       return acc + estudiante.nota;
     }, valorInicial);
@@ -231,5 +209,34 @@ function calcularPromedio() {
     promedio.textContent = `Promedio General del Curso: ${promedioGeneral.toFixed(
       2
     )}`;
+    //mostrar total estudiantes
+    total.textContent = `Total de Estudiantes: ${estudiantes.length}`;
+
+    //mostrar % aprobados
+    const cantidadAprobados = estudiantes.reduce(
+      (totalAprobados, estudiante) => {
+        if (estudiante.nota >= 4.0) totalAprobados++;
+        return totalAprobados;
+      },
+      valorInicial
+    );
+    const porcentajeAprobados = (cantidadAprobados * 100) / estudiantes.length;
+    aprobados.textContent = `Estudiantes Aprobados: ${porcentajeAprobados.toFixed(
+      1
+    )}%`;
+
+    //mostrar % reprobados
+    const cantidadReprobados = estudiantes.reduce(
+      (totalReprobados, estudiante) => {
+        if (estudiante.nota < 4.0) totalReprobados++;
+        return totalReprobados;
+      },
+      valorInicial
+    );
+    const porcentajeReprobados =
+      (cantidadReprobados * 100) / estudiantes.length;
+    reprobados.textContent = `Estudiantes Reprobados: ${porcentajeReprobados.toFixed(
+      1
+    )}%`;
   }
 }

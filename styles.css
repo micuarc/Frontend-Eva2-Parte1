@@ -19,6 +19,7 @@ div #promedio {
   color: #358ade;
   font-size: 0.7rem;
   text-align: center;
+  margin-bottom: 1.5rem;
 }
 
 div .formulario {
@@ -103,4 +104,19 @@ table {
   [headers="col-acciones"] {
     width: 20%;
   }
+}
+
+.modal-header {
+  background-color: #0d6efd;
+}
+.modal-content {
+  overflow: hidden;
+}
+
+.modal-title {
+  color: #fff;
+}
+
+.card {
+  text-align: center;
 }
