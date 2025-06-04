@@ -131,7 +131,7 @@ function calcular() {
 
     //calcular total de eximiidos
     const cantidadEximidos = estudiantes.reduce((totalEximidos, estudiante) => {
-      if (estudiante.nota >= 5.0) totalEximidos++;
+      if (estudiante.nota > 5.0) totalEximidos++;
       return totalEximidos;
     }, valorInicial);
     //mostrar eximidos
@@ -140,7 +140,7 @@ function calcular() {
     //calcular total de estudiantes que van a  examen
     const cantidadRindenExamen = estudiantes.reduce(
       (vanAExamen, estudiante) => {
-        if (estudiante.nota < 5.0) vanAExamen++;
+        if (estudiante.nota <= 5.0) vanAExamen++;
         return vanAExamen;
       },
       valorInicial
