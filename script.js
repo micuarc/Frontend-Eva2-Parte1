@@ -112,47 +112,38 @@ const valorInicial = 0;
 function calcular() {
   if (estudiantes.length === 0) {
     promedio.textContent = "Promedio de Calificaciones: No Disponible";
+    total.textContent = `Total de Estudiantes: No Disponible`;
+    eximidos.textContent = `Estudiantes eximidos: No Disponible`;
+    danExamen.textContent = `Estudiantes que rinden examen: No Disponible`;
   } else {
     //calcular promedio
     const totalDeNotas = estudiantes.reduce((acc, estudiante) => {
       return acc + estudiante.nota;
-    }, valorInicial);
+    }, 0);
     const promedioGeneral = totalDeNotas / estudiantes.length;
     promedio.textContent = `Promedio General del Curso: ${promedioGeneral.toFixed(
       2
     )}`;
-
     //mostrar total estudiantes
     total.textContent = `Total de Estudiantes: ${estudiantes.length}`;
+    //calcular total de eximiidos
+    const cantidadEximidos = estudiantes.reduce((totalEximidos, estudiante) => {
+      if (estudiante.nota >= 5.0) totalEximidos++;
+      return totalEximidos;
+    }, valorInicial);
+    //mostrar eximidos
+    eximidos.textContent = `Estudiantes eximidos: ${cantidadEximidos}`;
 
-    //calcular total de aprobados
-    const cantidadAprobados = estudiantes.reduce(
-      (totalAprobados, estudiante) => {
-        if (estudiante.nota >= 4.0) totalAprobados++;
-        return totalAprobados;
+    //calcular total de estudiantes que dan examen
+    const cantidadRindenExamen = estudiantes.reduce(
+      (vanAExamen, estudiante) => {
+        if (estudiante.nota < 5.0) vanAExamen++;
+        return vanAExamen;
       },
       valorInicial
     );
-    //calcular y mostrar % de aprobados
-    const porcentajeAprobados = (cantidadAprobados * 100) / estudiantes.length;
-    aprobados.textContent = `Estudiantes Aprobados: ${porcentajeAprobados.toFixed(
-      1
-    )}%`;
-
-    //calcular total de reprobados
-    const cantidadReprobados = estudiantes.reduce(
-      (totalReprobados, estudiante) => {
-        if (estudiante.nota < 4.0) totalReprobados++;
-        return totalReprobados;
-      },
-      valorInicial
-    );
-    //calcular y mostrar % de reprobados
-    const porcentajeReprobados =
-      (cantidadReprobados * 100) / estudiantes.length;
-    reprobados.textContent = `Estudiantes Reprobados: ${porcentajeReprobados.toFixed(
-      1
-    )}%`;
+    //mostrar eximidos
+    danExamen.textContent = `Estudiantes que rinden examen: ${cantidadRindenExamen}`;
   }
 }
 
