@@ -111,6 +111,7 @@ function crearBoton(tipo, accion) {
 const valorInicial = 0;
 function calcular() {
   if (estudiantes.length === 0) {
+    //actualizar cards a valor default
     promedio.textContent = "Promedio de Calificaciones: No Disponible";
     total.textContent = `Total de Estudiantes: No Disponible`;
     eximidos.textContent = `Estudiantes eximidos: No Disponible`;
@@ -124,8 +125,10 @@ function calcular() {
     promedio.textContent = `Promedio General del Curso: ${promedioGeneral.toFixed(
       2
     )}`;
+
     //mostrar total estudiantes
     total.textContent = `Total de Estudiantes: ${estudiantes.length}`;
+
     //calcular total de eximiidos
     const cantidadEximidos = estudiantes.reduce((totalEximidos, estudiante) => {
       if (estudiante.nota >= 5.0) totalEximidos++;
@@ -134,7 +137,7 @@ function calcular() {
     //mostrar eximidos
     eximidos.textContent = `Estudiantes eximidos: ${cantidadEximidos}`;
 
-    //calcular total de estudiantes que dan examen
+    //calcular total de estudiantes que van a  examen
     const cantidadRindenExamen = estudiantes.reduce(
       (vanAExamen, estudiante) => {
         if (estudiante.nota < 5.0) vanAExamen++;
@@ -142,6 +145,7 @@ function calcular() {
       },
       valorInicial
     );
+
     //mostrar eximidos
     danExamen.textContent = `Estudiantes que rinden examen: ${cantidadRindenExamen}`;
   }
